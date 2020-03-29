@@ -10,13 +10,14 @@ script = ExtResource( 2 )
 [node name="PlayerShip" parent="." instance=ExtResource( 1 )]
 position = Vector2( -2, 0 )
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="PlayerShip"]
+position = Vector2( 2, 0 )
 rotation = 3.14159
-rotating = true
+scale = Vector2( 1, -1 )
 current = true
 
 [node name="AsteroidField" type="Node2D" parent="."]
 
 [node name="KinematicBody2D" parent="AsteroidField" instance=ExtResource( 3 )]
-position = Vector2( 138, 108 )
+position = Vector2( 97, -129 )
 AngularSpeed = 50.0

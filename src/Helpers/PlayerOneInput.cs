@@ -5,6 +5,12 @@ public class PlayerOneInput : ShipInput {
 
     public static readonly PlayerOneInput Instance = new PlayerOneInput();
 
+    public bool SpeedBrake {
+        get {
+            return Input.IsActionPressed("SpeedBrake");
+        }
+    }
+
     public float VerticalAxis {
         get {
             if (Forward) {

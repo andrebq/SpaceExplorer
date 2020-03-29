@@ -1,12 +1,22 @@
 using Godot;
 using System;
 
-public class PlayerShip : Node2D
+public class PlayerShip : KinematicBody2D
 {
-	private KinematicBody2D body2D;
 	private RayCast2D headingCast2D;
 	private ShipPilot pilot;
-	private Node2D rocketExhaust;
+	private Node2D frontExhaust;
+	private Node2D backExhaust;
+
+	[Export]
+	public float MaxThrust {
+		get {
+			return pilot.MaxThrust;
+		}
+		set {
+			pilot.MaxThrust = Mathf.Abs(value);
+		}
+	}
 
 	[Export]
 	public float MaxSpeed { 
@@ -16,30 +26,38 @@ public class PlayerShip : Node2D
 		set {
 			pilot.MaxSpeed = Mathf.Abs(value);
 		}
-	 }
+	}
+
+	[Export]
+	public float Speed {
+		get {
+			return pilot.Speed;
+		}
+	}
 
 
 	[Export]
-	public Camera2D Camera {get; set;}
+	public bool ControlCamera {get; set;}
 
 	public PlayerShip() {
 		pilot = new ShipPilot();
+		ControlCamera = true;
 	}
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		body2D = this.FindNode("KinematicBody2D", true, true) as KinematicBody2D;
 		headingCast2D = this.FindNode("RayCast2D", true, true) as RayCast2D;
-		rocketExhaust = this.FindNode("RocketExhaust", true, true) as Node2D;
+		frontExhaust = this.FindNode("FrontExhaust", true, true) as Node2D;
+		backExhaust = this.FindNode("BackExhaust", true, true) as Node2D;
 
-		pilot.Ready(body2D, PlayerOneInput.Instance);
+		pilot.Ready(this, PlayerOneInput.Instance);
 	}
 
 	public override void _Process(float delta) {
 		pilot.Process(delta);
-		rocketExhaust.Visible = pilot.IsThurstersON;
-		//body2D.MoveAndCollide(Vector2.Left * body2D.Rotation, true, true, false);
+		frontExhaust.Visible = pilot.Thrusters.Foward > 0;
+		backExhaust.Visible = pilot.Thrusters.Backward > 0;
 	}
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
