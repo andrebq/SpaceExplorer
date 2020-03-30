@@ -33,6 +33,9 @@ public class PlayerShip : KinematicBody2D
 		get {
 			return pilot.Speed;
 		}
+		set {
+			// ignored
+		}
 	}
 
 
@@ -59,10 +62,4 @@ public class PlayerShip : KinematicBody2D
 		frontExhaust.Visible = pilot.Thrusters.Foward > 0;
 		backExhaust.Visible = pilot.Thrusters.Backward > 0;
 	}
-
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }

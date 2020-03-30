@@ -3,6 +3,12 @@ using Godot;
 struct Thrusters {
 	public float Foward;
 	public float Backward;
+
+	public bool HasThrust {
+		get {
+			return Foward > 0 || Backward > 0;
+		}
+	}
 }
 class ShipPilot {
 	private KinematicBody2D body;
@@ -43,10 +49,16 @@ class ShipPilot {
 		UpdateThursters(delta);
 		Speed += ((Thrusters.Foward - Thrusters.Backward) - ComputeDrag(Speed)) * delta;
 
-		Speed = ZeroValue(Speed);
+		if (!Thrusters.HasThrust) {
+			Speed = ZeroValue(Speed);
+		}
 
 		body.Rotate(input.RotationAxis(delta));
-		body.MoveAndCollide(Vector2.Down.Rotated(body.Rotation) * Speed * -1);
+		var movement = Vector2.Down.Rotated(body.Rotation) * Speed * -1;
+		var collision = body.MoveAndCollide(movement);
+		if (collision != null) {
+			Speed = 0;
+		}
 	}
 
 	public void UpdateThursters(float delta) {
@@ -55,11 +67,11 @@ class ShipPilot {
 			Thrusters.Foward = 0;
 			Thrusters.Backward = 0;
 		} else if (axisValue > 0) {
-			Thrusters.Foward = MaxThrust * Mathf.Abs(axisValue);
+			Thrusters.Foward = Mathf.Lerp(Thrusters.Foward, MaxThrust, Mathf.Abs(axisValue) * delta);
 			Thrusters.Backward = 0;
 		} else {
 			Thrusters.Foward = 0;
-			Thrusters.Backward = MaxThrust * Mathf.Abs(axisValue);
+			Thrusters.Backward = Mathf.Lerp(Thrusters.Backward, MaxThrust, Mathf.Abs(axisValue) * delta);
 		}
 	}
 
