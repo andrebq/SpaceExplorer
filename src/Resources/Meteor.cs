@@ -20,7 +20,7 @@ public class Meteor : KinematicBody2D
     // private string b = "text";
 
     public Meteor() {
-        this.angularSpeedDeg = 50;
+        this.angularSpeedDeg = 180;
     }
 
     // Called when the node enters the scene tree for the first time.

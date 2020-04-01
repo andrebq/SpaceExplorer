@@ -56,6 +56,7 @@
     <Compile Include="PlayerInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Root.cs" />
+    <Compile Include="src\HUD\EntityHUD.cs" />
     <Compile Include="src\HUD\HUD.cs" />
     <Compile Include="src\Resources\Meteor.cs" />
     <Compile Include="src\Ships\PlayerShip.cs" />
