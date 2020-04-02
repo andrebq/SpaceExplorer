@@ -9,7 +9,8 @@
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 13.2198
 
-[node name="KinematicBody2D" type="KinematicBody2D"]
+[node name="Ship" type="KinematicBody2D"]
+collision_mask = 15
 script = ExtResource( 2 )
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
@@ -65,3 +66,9 @@ __meta__ = {
 
 [node name="EntityHUD" parent="." instance=ExtResource( 5 )]
 Size = Vector2( 70, 70 )
+
+[node name="RocketLauncherPosition" type="Position2D" parent="."]
+position = Vector2( 0, 40 )
+__meta__ = {
+"_gizmo_extents_": 30.0
+}
