@@ -24,9 +24,8 @@ public class Root : Node2D
 		hud.SetSpeed(playerShip.Speed);
 	}
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+	private void _on_PlayerShip_Warning(String msg) {
+		hud.Say(msg);
+	}
+
 }

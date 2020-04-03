@@ -25,3 +25,4 @@ position = Vector2( 97, -129 )
 [node name="PlayerBox" type="Node2D" parent="."]
 
 [node name="PlayerShip" parent="PlayerBox" instance=ExtResource( 1 )]
+[connection signal="Warning" from="PlayerBox/PlayerShip" to="." method="_on_PlayerShip_Warning"]
