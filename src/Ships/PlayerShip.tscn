@@ -48,22 +48,6 @@ texture = ExtResource( 4 )
 scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 1 )
 
-[node name="HealthBar" type="ColorRect" parent="."]
-visible = false
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -25.0
-margin_top = -45.0
-margin_right = 25.0
-margin_bottom = -40.0
-rect_scale = Vector2( 1.52, 1 )
-rect_pivot_offset = Vector2( 25, 2.5 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="EntityHUD" parent="." instance=ExtResource( 5 )]
 Size = Vector2( 70, 70 )
 

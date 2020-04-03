@@ -57,20 +57,14 @@ public class PlayerShip : KinematicBody2D
 		headingCast2D = this.FindNode("RayCast2D", true, true) as RayCast2D;
 		frontExhaust = this.FindNode("FrontExhaust", true, true) as Node2D;
 		backExhaust = this.FindNode("BackExhaust", true, true) as Node2D;
-		healthBar = this.FindNode("HealthBar", true, true) as ColorRect;
 		rocketLauncherPosition = this.FindNode("RocketLauncherPosition", true, true) as Position2D;
 		dummyRocketScene = (PackedScene)ResourceLoader.Load("res://src/Ammo/DummyRocket.tscn");
 
 		pilot.Ready(this, PlayerOneInput.Instance);
-		healthBar.SetAsToplevel(true);
 	}
 
 	public override void _Process(float delta) {
 		pilot.Process(delta);
-		var newPos = GlobalPosition;
-		newPos.y -= 45 + 2.5f;
-		newPos.x -= 25;
-		healthBar.SetGlobalPosition(newPos, true);
 		frontExhaust.Visible = pilot.Thrusters.Foward > 0;
 		backExhaust.Visible = pilot.Thrusters.Backward > 0;
 
@@ -80,9 +74,9 @@ public class PlayerShip : KinematicBody2D
 	}
 
 	public void FireMainWeapon() {
-		GD.Print("Fire main weapon");
 		DummyRocket dr = (DummyRocket)dummyRocketScene.Instance();
-		dr.Heading = new Vector2(Mathf.Sin(Rotation), Mathf.Cos(Rotation));
+		var rocketHeading = Mathf.Pi/2 + Rotation;
+		dr.Heading = new Vector2(Mathf.Cos(rocketHeading), Mathf.Sin(rocketHeading));
 		dr.GlobalPosition = rocketLauncherPosition.GlobalPosition;
 		GetParent().AddChild(dr);
 		dr.Fire();

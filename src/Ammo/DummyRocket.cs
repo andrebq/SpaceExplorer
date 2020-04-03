@@ -6,7 +6,7 @@ public class DummyRocket : KinematicBody2D
     private AnimationPlayer animation;
 
     [Export]
-    public float Lifetime {get; set;}
+    public float Lifetime { get; set; }
 
     [Export]
     public Vector2 Heading { get; set; }
@@ -14,8 +14,9 @@ public class DummyRocket : KinematicBody2D
     [Export]
     public float Speed { get; set; }
 
-    public DummyRocket() {
-        Speed = 100;
+    public DummyRocket()
+    {
+        Speed = 1000;
         Lifetime = 3;
     }
 
@@ -25,19 +26,33 @@ public class DummyRocket : KinematicBody2D
         animation = FindNode("Animation", true, true) as AnimationPlayer;
     }
 
-    public void Fire() {
+    public void Fire()
+    {
         animation.Play("Flying");
+        Rotation = Heading.Angle() + Mathf.Pi / 2;
     }
 
-    public override void _Process(float delta) {
-        Rotation = Heading.Angle();
-        var collision = MoveAndCollide(Heading.Normalized() * Speed * delta);
-        if (collision != null) {
-            GD.Print("Collison detected: ", collision);
+    public override void _Process(float delta)
+    {
+        var collision = MoveAndCollide(Heading * Speed * delta);
+        if (collision != null)
+        {
+            Explode();
         }
         Lifetime -= delta;
-        if (Lifetime <= 0) {
-            GetParent().RemoveChild(this);
+        if (Lifetime <= 0)
+        {
+            Vanish();
         }
+    }
+
+    public void Explode()
+    {
+        Vanish();
+    }
+
+    public void Vanish()
+    {
+        QueueFree();
     }
 }
