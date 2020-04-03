@@ -9,44 +9,54 @@ public class PlayerShip : KinematicBody2D
 	private Node2D frontExhaust;
 	private Node2D backExhaust;
 	private ColorRect healthBar;
-	
+
 	private Position2D rocketLauncherPosition;
 
 	[Export]
-	public float MaxThrust {
-		get {
+	public float MaxThrust
+	{
+		get
+		{
 			return pilot.MaxThrust;
 		}
-		set {
+		set
+		{
 			pilot.MaxThrust = Mathf.Abs(value);
 		}
 	}
 
 	[Export]
-	public float MaxSpeed { 
-		get {
+	public float MaxSpeed
+	{
+		get
+		{
 			return pilot.MaxSpeed;
 		}
-		set {
+		set
+		{
 			pilot.MaxSpeed = Mathf.Abs(value);
 		}
 	}
 
 	[Export]
-	public float Speed {
-		get {
+	public float Speed
+	{
+		get
+		{
 			return pilot.Speed;
 		}
-		set {
+		set
+		{
 			// ignored
 		}
 	}
 
 
 	[Export]
-	public bool ControlCamera {get; set;}
+	public bool ControlCamera { get; set; }
 
-	public PlayerShip() {
+	public PlayerShip()
+	{
 		pilot = new ShipPilot();
 		ControlCamera = true;
 	}
@@ -63,22 +73,39 @@ public class PlayerShip : KinematicBody2D
 		pilot.Ready(this, PlayerOneInput.Instance);
 	}
 
-	public override void _Process(float delta) {
+	public override void _Process(float delta)
+	{
 		pilot.Process(delta);
 		frontExhaust.Visible = pilot.Thrusters.Foward > 0;
 		backExhaust.Visible = pilot.Thrusters.Backward > 0;
 
-		if (Input.IsActionJustPressed("FireMainWeapon")) {
+		if (Input.IsActionJustPressed("FireMainWeapon"))
+		{
 			FireMainWeapon();
 		}
 	}
 
-	public void FireMainWeapon() {
+	public void FireMainWeapon()
+	{
 		DummyRocket dr = (DummyRocket)dummyRocketScene.Instance();
-		var rocketHeading = Mathf.Pi/2 + Rotation;
+		dr.Connect("Hit", this, nameof(hit));
+
+		var rocketHeading = Mathf.Pi / 2 + Rotation;
 		dr.Heading = new Vector2(Mathf.Cos(rocketHeading), Mathf.Sin(rocketHeading));
 		dr.GlobalPosition = rocketLauncherPosition.GlobalPosition;
 		GetParent().AddChild(dr);
 		dr.Fire();
+	}
+	private void hit(Node2D body2D)
+	{
+		switch (body2D)
+		{
+			case Meteor meteor:
+				meteor.Explode();
+				break;
+			default:
+				// unexpected
+				break;
+		}
 	}
 }

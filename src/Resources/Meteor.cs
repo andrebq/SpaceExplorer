@@ -26,7 +26,11 @@ public class Meteor : KinematicBody2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+    }
 
+    public void Explode() {
+        GD.Print("Exploding and leaving some parts behind");
+        QueueFree();
     }
 
     public override void _Process(float delta) {

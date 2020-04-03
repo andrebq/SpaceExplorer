@@ -8,6 +8,9 @@ public class DummyRocket : KinematicBody2D
     private bool exploded;
     private Node2D missileGraphics;
 
+    [Signal]
+    public delegate void Hit(Node node);
+
     [Export]
     public float Lifetime { get; set; }
     [Export]
@@ -41,6 +44,7 @@ public class DummyRocket : KinematicBody2D
             var collision = MoveAndCollide(Heading * Speed * delta);
             if (collision != null)
             {
+                EmitSignal(nameof(Hit), collision.Collider);
                 Explode();
             }
         }
