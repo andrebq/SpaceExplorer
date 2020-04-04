@@ -7,6 +7,7 @@ public class Root : Node2D
 	// private int a = 2;
 	// private string b = "text";
 
+	private Node2D AsteroidField;
 	private PlayerShip playerShip;
 	private Camera2D camera;
 	private HUD hud;
@@ -15,6 +16,7 @@ public class Root : Node2D
 	{
 		camera = FindNode("Camera2D", true, true) as Camera2D;
 		playerShip = FindNode("PlayerShip", true, true) as PlayerShip;
+		AsteroidField = FindNode(nameof(AsteroidField)) as Node2D;
 		hud = FindNode("HUD") as HUD;
 		hud.Say("Go!");
 	}
@@ -28,4 +30,7 @@ public class Root : Node2D
 		hud.Say(msg);
 	}
 
+	private void _Meteor_Created(Meteor meteor) {
+		AsteroidField.AddChild(meteor);
+	}
 }
