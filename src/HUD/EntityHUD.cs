@@ -4,6 +4,8 @@ using System;
 [Tool]
 public class EntityHUD : Node2D
 {
+	[Export]
+	public float LineWidth {get; set;}
 	private Vector2 size;
 	[Export]
 	public Vector2 Size {
@@ -18,6 +20,7 @@ public class EntityHUD : Node2D
 
 	public EntityHUD() {
 		Size = new Vector2(64, 64);
+		LineWidth = 0.5f;
 	}
 
 	// Called when the node enters the scene tree for the first time.
@@ -32,7 +35,7 @@ public class EntityHUD : Node2D
 		}
 		var center = Vector2.Zero - Size/2;
 		Rect2 rect = new Rect2(center, Size);
-		this.DrawRect(rect, Colors.White, false, 2, true);
+		this.DrawRect(rect, Colors.White, false, LineWidth, true);
 	}
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

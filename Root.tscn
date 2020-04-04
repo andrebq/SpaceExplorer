@@ -20,7 +20,8 @@ smoothing_enabled = true
 [node name="AsteroidField" type="Node2D" parent="."]
 
 [node name="Meteor01" parent="AsteroidField" instance=ExtResource( 3 )]
-position = Vector2( 97, -129 )
+position = Vector2( 0, 168 )
+Lifetime = 1000.0
 
 [node name="PlayerBox" type="Node2D" parent="."]
 

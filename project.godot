@@ -70,6 +70,8 @@ FireMainWeapon={
 [mono]
 
 debugger_agent/wait_timeout=15000
+export/aot/enabled=true
+export/aot/full_aot=true
 
 [rendering]
 
