@@ -81,7 +81,7 @@ public class PlayerShip : KinematicBody2D
 
     public override void _Process(float delta)
     {
-        pilot.Process(delta);
+        //pilot.Process(delta);
         frontExhaust.Visible = pilot.Thrusters.Foward > 0;
         backExhaust.Visible = pilot.Thrusters.Backward > 0;
 

@@ -61,6 +61,7 @@
     <Compile Include="src\HUD\EntityHUD.cs" />
     <Compile Include="src\HUD\HUD.cs" />
     <Compile Include="src\Resources\Meteor.cs" />
+    <Compile Include="src\Ships\Pilot.cs" />
     <Compile Include="src\Ships\PlayerShip.cs" />
     <Compile Include="src\Helpers\*.cs" />
     <Compile Include="src\Ships\Thruster.cs" />
