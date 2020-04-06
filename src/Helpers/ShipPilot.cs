@@ -50,7 +50,7 @@ class ShipPilot
     {
         MaxSpeed = 50;
         Drag = 20;
-        MaxThrust = 500;
+        MaxThrust = 800;
         SpeedBreakerFactor = 10;
     }
 

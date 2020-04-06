@@ -53,6 +53,7 @@ public class Meteor : KinematicBody2D
         if (Divisible)
         {
             Subdivide();
+            this.CollisionLayer = 0;
         }
         QueueFree();
     }

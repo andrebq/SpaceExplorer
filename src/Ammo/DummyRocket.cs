@@ -63,6 +63,7 @@ public class DummyRocket : KinematicBody2D
 		explosion.Emitting = true;
 		missileGraphics.Visible = false;
 		Lifetime = explosion.Lifetime;
+		CollisionLayer = 0;
 	}
 
 	public void Vanish()

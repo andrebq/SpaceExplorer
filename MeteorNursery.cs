@@ -34,10 +34,8 @@ public class MeteorNursery : Position2D
         var m = meteorScene.Instance() as Meteor;
         var pos = this.GlobalPosition;
         var parentPos = (GetParent() as Node2D).GlobalPosition;
-        GD.Print("pos/parentPos", pos, "/", parentPos);
 
         m.LinearVelocity = (parentPos - pos).Normalized() * 1000;
-        GD.Print("pos: ", m.LinearVelocity);
         pos += Vector2.Right * rng.RandfRange(-30, 30);
         m.Lifetime *= 0.75f;
         m.GlobalPosition = pos;
