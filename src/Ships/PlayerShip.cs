@@ -40,16 +40,11 @@ public class PlayerShip : KinematicBody2D
         }
     }
 
-    [Export]
     public float Speed
     {
         get
         {
-            return pilot.Speed;
-        }
-        set
-        {
-            // ignored
+            return pilot.Velocity.Length();
         }
     }
 
@@ -89,19 +84,13 @@ public class PlayerShip : KinematicBody2D
 
     public void FireMainWeapon(float delta)
     {
-        if (Mathf.Abs(pilot.Speed) >= 20)
-        {
-			EmitSignal(nameof(Warning), "Too fast!");
-			return;
-        }
-
         DummyRocket dr = (DummyRocket)dummyRocketScene.Instance();
         dr.Connect("Hit", this, nameof(hit));
 
         var rocketHeading = Mathf.Pi / 2 + Rotation;
         dr.Heading = new Vector2(Mathf.Cos(rocketHeading), Mathf.Sin(rocketHeading));
         GetParent().AddChild(dr);
-        dr.Fire(Mathf.Abs(pilot.Speed), rocketLauncherPosition.GlobalPosition, delta);
+        dr.Fire(Mathf.Abs(Speed), rocketLauncherPosition.GlobalPosition, delta);
     }
     private void hit(Node2D body2D)
     {

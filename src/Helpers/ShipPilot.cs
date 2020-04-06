@@ -12,6 +12,10 @@ struct Thrusters
             return Foward > 0 || Backward > 0;
         }
     }
+
+    public Vector2 ComputeVector() {
+        return Vector2.Up * Foward + Vector2.Down * Backward;
+    }
 }
 class ShipPilot
 {
@@ -30,7 +34,7 @@ class ShipPilot
     public float SpeedBreakerFactor { get; set; }
     public float MaxSpeed { get; set; }
     public Thrusters Thrusters;
-    public float Speed { get; set; }
+    public Vector2 Velocity { get; set; }
     public float Drag { get; set; }
     public float MaxThrust { get; set; }
 
@@ -46,7 +50,7 @@ class ShipPilot
     {
         MaxSpeed = 50;
         Drag = 20;
-        MaxThrust = 30;
+        MaxThrust = 500;
         SpeedBreakerFactor = 10;
     }
 
@@ -59,22 +63,19 @@ class ShipPilot
     public void Process(float delta)
     {
         UpdateThursters(delta);
-        var thrust = (Thrusters.Foward - Thrusters.Backward) * delta;
-        var drag = ComputeDrag(Speed) * delta;
-        Speed += (thrust - drag);
-
         if (!Thrusters.HasThrust)
         {
-            Speed = ZeroValue(Speed);
+            Velocity = ZeroValueVector(Velocity);
         }
-
-        body.Rotate(input.RotationAxis(delta));
-        var movement = Vector2.Down.Rotated(body.Rotation) * Speed * -1;
-        var collision = body.MoveAndCollide(movement);
+        // Instant speed
+        Velocity = Thrusters.ComputeVector();
+        var movement = Velocity.Rotated(body.Rotation);
+        var collision = body.MoveAndCollide(movement * delta);
         if (collision != null)
         {
-            Speed = 0;
+            Velocity = Vector2.Zero;
         }
+        body.Rotate(input.RotationAxis(delta));
     }
 
     public void UpdateThursters(float delta)
@@ -87,13 +88,17 @@ class ShipPilot
         }
         else if (axisValue > 0)
         {
-            Thrusters.Foward = Mathf.Lerp(Thrusters.Foward, MaxThrust, Mathf.Abs(axisValue) * delta);
+            //Thrusters.Foward = Mathf.Lerp(Thrusters.Foward, MaxThrust, Mathf.Abs(axisValue) * delta);
+            // Instant Thrust
+            Thrusters.Foward = MaxThrust * Mathf.Abs(axisValue);
             Thrusters.Backward = 0;
         }
         else
         {
             Thrusters.Foward = 0;
-            Thrusters.Backward = Mathf.Lerp(Thrusters.Backward, MaxThrust, Mathf.Abs(axisValue) * delta);
+            //Thrusters.Backward = Mathf.Lerp(Thrusters.Backward, MaxThrust, Mathf.Abs(axisValue) * delta);
+            // Instant Thrust
+            Thrusters.Backward = MaxThrust * Mathf.Abs(axisValue);
         }
     }
 
@@ -104,12 +109,13 @@ class ShipPilot
 
     private float ComputeDrag(float speed)
     {
-        if (BreakersON)
-        {
-            speed *= SpeedBreakerFactor;
+        return Mathf.Lerp(0, MaxSpeed, Mathf.Abs(speed)/MaxSpeed);
+    }
+    private Vector2 ZeroValueVector(Vector2 vector, float tolerance = 0.5f) {
+        if (vector.LengthSquared() <= tolerance*tolerance) {
+            return Vector2.Zero;
         }
-        float factor = speed / MaxSpeed;
-        return factor * Drag;
+        return vector;
     }
     private float ZeroValue(float value, float tolerance = 0.5f)
     {
