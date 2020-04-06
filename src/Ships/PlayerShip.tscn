@@ -58,7 +58,15 @@ __meta__ = {
 "_gizmo_extents_": 30.0
 }
 
-[node name="ForwardThurster" parent="." instance=ExtResource( 6 )]
+[node name="ForwardThruster" parent="." instance=ExtResource( 6 )]
 position = Vector2( 0, 24 )
 scale = Vector2( 1, 5 )
 MaxThurst = 500.0
+DebugPaint = true
+
+[node name="BackwardThruster" parent="." instance=ExtResource( 6 )]
+position = Vector2( 0, -24 )
+rotation = 3.14159
+scale = Vector2( 1, 5 )
+MaxThurst = 500.0
+DebugPaint = true

@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 [Tool]
-public class Thurster : Node2D
+public class Thruster : Node2D
 {
     private float _maxThurst;
     private float _thrust;
@@ -35,7 +35,7 @@ public class Thurster : Node2D
     [Export(PropertyHint.Range, "0,1.0")]
     public float ThurstLimiter {get; set;}
 
-    public Thurster()
+    public Thruster()
     {
         MaxThurst = 1000;
         Thrust = 0;
@@ -52,7 +52,6 @@ public class Thurster : Node2D
     public override void _PhysicsProcess(float delta) {
         if (Active) {
             Thrust = Interpolate(Thrust, MaxThurst*ThurstLimiter, 0.8f *delta);
-            GD.Print("t: ", Thrust);
         } else {
             Thrust = 0f;
         }
@@ -67,10 +66,9 @@ public class Thurster : Node2D
     {
         if (Engine.EditorHint || DebugPaint)
         {
-            var width = 2;
             var finalHeight = Mathf.Max(0.1f, Mathf.Min(1, Mathf.Abs(Thrust / MaxThurst))) * HandleSize;
-            var rect = new Rect2(-width / 2, 0, width, finalHeight);
-            DrawRect(rect, Colors.LightPink, true);
+            var color = Active ? Colors.LightPink : Colors.LightCyan;
+            DrawLine(Vector2.Zero, new Vector2(0, finalHeight), color, 4);
         }
     }
 }

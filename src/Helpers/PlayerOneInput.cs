@@ -14,9 +14,9 @@ public class PlayerOneInput : ShipInput {
     public float VerticalAxis {
         get {
             if (Forward) {
-                return Input.GetActionStrength("Forward");
+                return -Input.GetActionStrength("Forward");
             } else if (Backward) {
-                return -Input.GetActionStrength("Backward");
+                return Input.GetActionStrength("Backward");
             }
             return 0;
         }

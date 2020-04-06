@@ -63,7 +63,7 @@
     <Compile Include="src\Resources\Meteor.cs" />
     <Compile Include="src\Ships\PlayerShip.cs" />
     <Compile Include="src\Helpers\*.cs" />
-    <Compile Include="src\Ships\Thurster.cs" />
+    <Compile Include="src\Ships\Thruster.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
