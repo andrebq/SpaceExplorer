@@ -7,7 +7,7 @@ public class Thruster : Node2D
     private float _maxThurst;
     private float _thrust;
     private float _handleSize;
-    [Export]
+    private Vector2 _thrustVector;
     public float MaxThurst
     {
         get { return _maxThurst; }
@@ -19,6 +19,12 @@ public class Thruster : Node2D
     {
         get { return _thrust; }
         set { _thrust = Mathf.Abs(value); if (Engine.EditorHint) { Update(); } }
+    }
+
+    [Export]
+    public Vector2 ThrustVector {
+        get { return _thrustVector; }
+        set { _thrustVector = value.Normalized(); Update(); }
     }
 
     [Export]
@@ -43,6 +49,7 @@ public class Thruster : Node2D
         ThurstLimiter = 1f;
         DebugPaint = false;
         Active = false;
+        ThrustVector = Vector2.Down;
     }
 
     public override void _Ready()
@@ -68,7 +75,7 @@ public class Thruster : Node2D
         {
             var finalHeight = Mathf.Max(0.1f, Mathf.Min(1, Mathf.Abs(Thrust / MaxThurst))) * HandleSize;
             var color = Active ? Colors.LightPink : Colors.LightCyan;
-            DrawLine(Vector2.Zero, new Vector2(0, finalHeight), color, 4);
+            DrawLine(Vector2.Zero, ThrustVector * finalHeight, color, 4);
         }
     }
 }

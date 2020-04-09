@@ -4,6 +4,8 @@ using System;
 [Tool]
 public class Pilot : Node2D
 {
+    private Steering _steering;
+    private Thruster[] _thrusters;
     private Vector2 _velocity;
     private bool _debugDraw;
     private Color _velocityColor;
@@ -27,6 +29,35 @@ public class Pilot : Node2D
         MaxSpeed = 1000;
     }
 
+    public override void _Ready()
+    {
+        int thrustersCount = 0;
+        foreach (var n in GetChildren())
+        {
+            switch (n)
+            {
+                case Thruster t:
+                    thrustersCount++;
+                    break;
+                case Steering s:
+                    _steering = s;
+                    break;
+                default:
+                    continue;
+            }
+        }
+        _thrusters = new Thruster[thrustersCount];
+        int idx = 0;
+        foreach (var n in GetChildren())
+        {
+            if (n is Thruster t)
+            {
+                _thrusters[idx] = t;
+                idx++;
+            }
+        }
+    }
+
     public override void _PhysicsProcess(float delta)
     {
         if (Engine.EditorHint) { return; }
@@ -35,10 +66,31 @@ public class Pilot : Node2D
         _DoPhysics(parent, delta);
     }
 
-    private void _DoPhysics(KinematicBody2D parent, float delta) {
-        var collision = parent.MoveAndCollide(Velocity * delta);
-        if (collision != null) {
+    private void _DoPhysics(KinematicBody2D parent, float delta)
+    {
+        _UpdateRotation(parent, delta);
+        _UpdateVelocity(delta);
+
+        var collision = parent.MoveAndCollide(Velocity.Rotated(parent.Rotation) * delta);
+        if (collision != null)
+        {
             EmitSignal(nameof(OnCollision), collision);
+            Velocity = Vector2.Zero;
+        }
+    }
+
+    private void _UpdateRotation(KinematicBody2D parent, float delta)
+    {
+        if (_steering != null && _steering.HorizontalAxis != 0f) {
+            parent.Rotate(delta * _steering.AngularChange);
+        }
+    }
+
+    private void _UpdateVelocity(float delta)
+    {
+        foreach (var t in _thrusters)
+        {
+            Velocity = Velocity + t.ThrustVector * t.Thrust * delta;
         }
     }
 

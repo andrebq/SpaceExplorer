@@ -13,6 +13,7 @@ public class PlayerShip : KinematicBody2D
     private ColorRect healthBar;
     private Thruster ForwardThruster;
     private Thruster BackwardThruster;
+    private Steering Steering;
 
     private Position2D rocketLauncherPosition;
 
@@ -70,6 +71,7 @@ public class PlayerShip : KinematicBody2D
         dummyRocketScene = (PackedScene)ResourceLoader.Load("res://src/Ammo/DummyRocket.tscn");
         ForwardThruster = this.FindNode(nameof(ForwardThruster)) as Thruster;
         BackwardThruster = this.FindNode(nameof(BackwardThruster)) as Thruster;
+        Steering = this.FindNode(nameof(Steering)) as Steering;
 
         pilot.Ready(this, PlayerOneInput.Instance);
     }
@@ -77,14 +79,11 @@ public class PlayerShip : KinematicBody2D
     public override void _PhysicsProcess(float delta) {
         ForwardThruster.Active = PlayerOneInput.Instance.Forward;
         BackwardThruster.Active = PlayerOneInput.Instance.Backward;
+        Steering.HorizontalAxis = PlayerOneInput.Instance.HorizontalAxis;
     }
 
     public override void _Process(float delta)
     {
-        //pilot.Process(delta);
-        frontExhaust.Visible = pilot.Thrusters.Foward > 0;
-        backExhaust.Visible = pilot.Thrusters.Backward > 0;
-
         if (Input.IsActionJustPressed("FireMainWeapon"))
         {
             FireMainWeapon(delta);
