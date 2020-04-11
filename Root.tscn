@@ -1,12 +1,13 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/Ships/PlayerShip.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Root.cs" type="Script" id=2]
 [ext_resource path="res://src/Resources/Meteor.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/HUD/HUD.tscn" type="PackedScene" id=4]
 [ext_resource path="res://MeteorNursery.cs" type="Script" id=5]
+[ext_resource path="res://src/Stations/HomeStation.tscn" type="PackedScene" id=6]
 
-[node name="Node2D" type="Node2D"]
+[node name="Space" type="Node2D"]
 script = ExtResource( 2 )
 
 [node name="HUD" parent="." instance=ExtResource( 4 )]
@@ -29,5 +30,9 @@ position = Vector2( 0, 168 )
 [node name="MeteorNursery" type="Position2D" parent="PlayerBox/PlayerShip"]
 position = Vector2( 0, 592 )
 script = ExtResource( 5 )
+
+[node name="HomeStation" parent="." instance=ExtResource( 6 )]
+position = Vector2( -328, -144 )
+rotation = 0.628319
 [connection signal="Warning" from="PlayerBox/PlayerShip" to="." method="_on_PlayerShip_Warning"]
 [connection signal="MeteorCreated" from="PlayerBox/PlayerShip/MeteorNursery" to="." method="_Meteor_Created"]
