@@ -15,8 +15,6 @@ follow_viewport_enable = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
-zoom = Vector2( 2, 2 )
-process_mode = 0
 smoothing_enabled = true
 
 [node name="AsteroidField" type="Node2D" parent="."]

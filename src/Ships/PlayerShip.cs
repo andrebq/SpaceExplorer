@@ -7,57 +7,29 @@ public class PlayerShip : KinematicBody2D
     public delegate void Warning(String msg);
     private PackedScene dummyRocketScene;
     private RayCast2D headingCast2D;
-    private ShipPilot pilot;
     private Node2D frontExhaust;
     private Node2D backExhaust;
     private ColorRect healthBar;
     private Thruster ForwardThruster;
     private Thruster BackwardThruster;
     private Steering Steering;
-
+    private Drag SpeedBrake;
+    private Pilot Pilot;
     private Position2D rocketLauncherPosition;
 
-    [Export]
-    public float MaxThrust
+    public Vector2 Velocity
     {
         get
         {
-            return pilot.MaxThrust;
-        }
-        set
-        {
-            pilot.MaxThrust = Mathf.Abs(value);
+            return Pilot.Velocity;
         }
     }
-
-    [Export]
-    public float MaxSpeed
-    {
-        get
-        {
-            return pilot.MaxSpeed;
-        }
-        set
-        {
-            pilot.MaxSpeed = Mathf.Abs(value);
-        }
-    }
-
-    public float Speed
-    {
-        get
-        {
-            return pilot.Velocity.Length();
-        }
-    }
-
 
     [Export]
     public bool ControlCamera { get; set; }
 
     public PlayerShip()
     {
-        pilot = new ShipPilot();
         ControlCamera = true;
     }
 
@@ -72,13 +44,20 @@ public class PlayerShip : KinematicBody2D
         ForwardThruster = this.FindNode(nameof(ForwardThruster)) as Thruster;
         BackwardThruster = this.FindNode(nameof(BackwardThruster)) as Thruster;
         Steering = this.FindNode(nameof(Steering)) as Steering;
-
-        pilot.Ready(this, PlayerOneInput.Instance);
+        SpeedBrake = this.FindNode(nameof(SpeedBrake)) as Drag;
+        Pilot = this.FindNode(nameof(Pilot)) as Pilot;
     }
 
-    public override void _PhysicsProcess(float delta) {
+    public override void _PhysicsProcess(float delta)
+    {
+        SpeedBrake.Active = PlayerOneInput.Instance.SpeedBrake;
+        Pilot.Break = SpeedBrake.Active;
         ForwardThruster.Active = PlayerOneInput.Instance.Forward;
+        backExhaust.Visible = ForwardThruster.Active;
+
         BackwardThruster.Active = PlayerOneInput.Instance.Backward;
+        frontExhaust.Visible = BackwardThruster.Active;
+
         Steering.HorizontalAxis = PlayerOneInput.Instance.HorizontalAxis;
     }
 
@@ -98,7 +77,7 @@ public class PlayerShip : KinematicBody2D
         var rocketHeading = Mathf.Pi / 2 + Rotation;
         dr.Heading = new Vector2(Mathf.Cos(rocketHeading), Mathf.Sin(rocketHeading));
         GetParent().AddChild(dr);
-        dr.Fire(Mathf.Abs(Speed), rocketLauncherPosition.GlobalPosition, delta);
+        dr.Fire(Mathf.Abs(Pilot.Velocity.Length()), rocketLauncherPosition.GlobalPosition, delta);
     }
     private void hit(Node2D body2D)
     {

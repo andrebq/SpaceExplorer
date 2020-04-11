@@ -41,7 +41,6 @@ public class Steering : Node2D
         if (Engine.EditorHint || DebugDraw)
         {
             var angleDraw = angleOffset + AngularChange;
-            GD.Print(Mathf.Rad2Deg(angleDraw));
             DrawArc(Position,
                 Mathf.Lerp(10, 20, Mathf.Min(_speed / 100, 1f)),
                 angleDraw - Mathf.Deg2Rad(20),

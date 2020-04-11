@@ -23,7 +23,7 @@ public class Root : Node2D
 
 	public override void _Process(float delta) {
 		camera.Offset = playerShip.Position;
-		hud.SetSpeed(playerShip.Speed);
+		hud.SetSpeed(playerShip.Velocity.Length());
 	}
 
 	private void _on_PlayerShip_Warning(String msg) {

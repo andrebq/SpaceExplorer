@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Assets/KeneySpaceShooterExtension/Ships/spaceShips_003.png" type="Texture" id=1]
 [ext_resource path="res://src/Ships/PlayerShip.cs" type="Script" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://src/Ships/Thruster.tscn" type="PackedScene" id=6]
 [ext_resource path="res://src/Ships/Pilot.tscn" type="PackedScene" id=7]
 [ext_resource path="res://src/Ships/Steering.tscn" type="PackedScene" id=8]
+[ext_resource path="res://src/Ships/Drag.tscn" type="PackedScene" id=9]
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 13.2198
@@ -64,18 +65,30 @@ __meta__ = {
 position = Vector2( 16, 24 )
 
 [node name="BackwardThruster" parent="Pilot" instance=ExtResource( 6 )]
-position = Vector2( -16, -16 )
+position = Vector2( -16, -40 )
 scale = Vector2( 1, 1.66667 )
 ThrustVector = Vector2( 0, -1 )
-DebugPaint = true
+MaxThurst = 1000.0
 
 [node name="ForwardThruster" parent="Pilot" instance=ExtResource( 6 )]
 position = Vector2( -16, 0 )
 scale = Vector2( 1, 1.66667 )
-DebugPaint = true
+MaxThurst = 1000.0
 
 [node name="Steering" parent="Pilot" instance=ExtResource( 8 )]
-position = Vector2( 1, 0 )
+position = Vector2( -16, 8 )
 scale = Vector2( 2, 2 )
-DebugDraw = true
 AngularSpeed = 100.0
+
+[node name="Drag" parent="Pilot" instance=ExtResource( 9 )]
+position = Vector2( 8, 0 )
+Area = 2.0
+Coeficient = 0.001
+MediumDensity = 1.0
+Active = true
+
+[node name="SpeedBrake" parent="Pilot" instance=ExtResource( 9 )]
+position = Vector2( 16, 0 )
+Area = 3.0
+Coeficient = 0.001
+MediumDensity = 1.0

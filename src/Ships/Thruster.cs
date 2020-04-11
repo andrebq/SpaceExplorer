@@ -6,8 +6,8 @@ public class Thruster : Node2D
 {
     private float _maxThurst;
     private float _thrust;
-    private float _handleSize;
     private Vector2 _thrustVector;
+    [Export]
     public float MaxThurst
     {
         get { return _maxThurst; }
@@ -22,16 +22,10 @@ public class Thruster : Node2D
     }
 
     [Export]
-    public Vector2 ThrustVector {
+    public Vector2 ThrustVector
+    {
         get { return _thrustVector; }
         set { _thrustVector = value.Normalized(); Update(); }
-    }
-
-    [Export]
-    public float HandleSize
-    {
-        get { return _handleSize; }
-        set { _handleSize = Mathf.Abs(value); Update(); }
     }
 
     [Export]
@@ -39,13 +33,12 @@ public class Thruster : Node2D
     [Export]
     public bool DebugPaint { get; set; }
     [Export(PropertyHint.Range, "0,1.0")]
-    public float ThurstLimiter {get; set;}
+    public float ThurstLimiter { get; set; }
 
     public Thruster()
     {
         MaxThurst = 1000;
         Thrust = 0;
-        HandleSize = 100;
         ThurstLimiter = 1f;
         DebugPaint = false;
         Active = false;
@@ -56,16 +49,21 @@ public class Thruster : Node2D
     {
     }
 
-    public override void _PhysicsProcess(float delta) {
-        if (Active) {
-            Thrust = Interpolate(Thrust, MaxThurst*ThurstLimiter, 0.8f *delta);
-        } else {
+    public override void _PhysicsProcess(float delta)
+    {
+        if (Active)
+        {
+            Thrust = Interpolate(Thrust, MaxThurst * Mathf.Min(ThurstLimiter, 1f), 0.8f * delta);
+        }
+        else
+        {
             Thrust = 0f;
         }
         Update();
     }
 
-    private float Interpolate(float actual, float target, float step) {
+    private float Interpolate(float actual, float target, float step)
+    {
         return Mathf.Lerp(actual, target, step);
     }
 
@@ -73,7 +71,7 @@ public class Thruster : Node2D
     {
         if (Engine.EditorHint || DebugPaint)
         {
-            var finalHeight = Mathf.Max(0.1f, Mathf.Min(1, Mathf.Abs(Thrust / MaxThurst))) * HandleSize;
+            var finalHeight = Mathf.Max(0.1f, Mathf.Min(1, Mathf.Abs(Thrust / MaxThurst))) * 100;
             var color = Active ? Colors.LightPink : Colors.LightCyan;
             DrawLine(Vector2.Zero, ThrustVector * finalHeight, color, 4);
         }

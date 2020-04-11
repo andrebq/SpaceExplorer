@@ -6,6 +6,7 @@ public class Pilot : Node2D
 {
     private Steering _steering;
     private Thruster[] _thrusters;
+    private Drag[] _drag;
     private Vector2 _velocity;
     private bool _debugDraw;
     private Color _velocityColor;
@@ -21,23 +22,26 @@ public class Pilot : Node2D
     [Export]
     public bool DebugDraw { get { return _debugDraw; } set { _debugDraw = value; Update(); } }
     [Export]
-    public float MaxSpeed { get { return _maxSpeed; } set { _maxSpeed = Math.Abs(value); Update(); } }
+    public bool Break { get; set; }
 
     public Pilot()
     {
         VelocityColor = Colors.Green;
-        MaxSpeed = 1000;
     }
 
     public override void _Ready()
     {
         int thrustersCount = 0;
+        int dragCount = 0;
         foreach (var n in GetChildren())
         {
             switch (n)
             {
                 case Thruster t:
                     thrustersCount++;
+                    break;
+                case Drag d:
+                    dragCount++;
                     break;
                 case Steering s:
                     _steering = s;
@@ -47,15 +51,24 @@ public class Pilot : Node2D
             }
         }
         _thrusters = new Thruster[thrustersCount];
-        int idx = 0;
+        _drag = new Drag[dragCount];
+        int tIdx = 0;
+        int dIdx = 0;
         foreach (var n in GetChildren())
         {
-            if (n is Thruster t)
+            switch (n)
             {
-                _thrusters[idx] = t;
-                idx++;
+                case Thruster t:
+                    _thrusters[tIdx] = t;
+                    tIdx++;
+                    break;
+                case Drag d:
+                    _drag[dIdx] = d;
+                    dIdx++;
+                    break;
             }
         }
+
     }
 
     public override void _PhysicsProcess(float delta)
@@ -77,21 +90,33 @@ public class Pilot : Node2D
             EmitSignal(nameof(OnCollision), collision);
             Velocity = Vector2.Zero;
         }
+        if (Break && Velocity.LengthSquared() <= 100000) {
+            Velocity = Velocity.LinearInterpolate(Vector2.Zero, 0.3f);
+        }
     }
 
     private void _UpdateRotation(KinematicBody2D parent, float delta)
     {
-        if (_steering != null && _steering.HorizontalAxis != 0f) {
+        if (_steering != null && _steering.HorizontalAxis != 0f)
+        {
             parent.Rotate(delta * _steering.AngularChange);
         }
     }
 
     private void _UpdateVelocity(float delta)
     {
+        var prevVelocity = Velocity;
+        var totalThrust = Vector2.Zero;
         foreach (var t in _thrusters)
         {
-            Velocity = Velocity + t.ThrustVector * t.Thrust * delta;
+            totalThrust += t.ThrustVector * t.Thrust;
         }
+        var totalDrag = Vector2.Zero;
+        foreach (var d in _drag) {
+            d.Velocity = prevVelocity;
+            totalDrag += d.TotalDrag;
+        }
+        Velocity = Velocity + (totalThrust + totalDrag) * delta;
     }
 
     public override void _Draw()
