@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class PlayerShip : KinematicBody2D
+public class PlayerShip : KinematicBody2D, IDockable
 {
     [Signal]
     public delegate void Warning(String msg);
@@ -15,6 +15,7 @@ public class PlayerShip : KinematicBody2D
     private Steering Steering;
     private Drag SpeedBrake;
     private Pilot Pilot;
+    private DockingPilot DockingPilot;
     private Position2D rocketLauncherPosition;
 
     public Vector2 Velocity
@@ -46,6 +47,7 @@ public class PlayerShip : KinematicBody2D
         Steering = this.FindNode(nameof(Steering)) as Steering;
         SpeedBrake = this.FindNode(nameof(SpeedBrake)) as Drag;
         Pilot = this.FindNode(nameof(Pilot)) as Pilot;
+        DockingPilot = this.FindNode(nameof(DockingPilot)) as DockingPilot;
     }
 
     public override void _PhysicsProcess(float delta)
@@ -66,6 +68,10 @@ public class PlayerShip : KinematicBody2D
         if (Input.IsActionJustPressed("FireMainWeapon"))
         {
             FireMainWeapon(delta);
+        }
+        if (PlayerOneInput.Instance.StartDock)
+        {
+            DockingPilot.Active = !DockingPilot.Active;
         }
     }
 
@@ -90,5 +96,31 @@ public class PlayerShip : KinematicBody2D
                 // unexpected
                 break;
         }
+    }
+
+    // -------------------
+    // IDockable
+    // -------------------
+    public void OfferDock(Node dockingStation)
+    {
+        if (dockingStation is IDockStation ds) {
+            DockingPilot.DockPort = ds.Center;
+        }
+    }
+    public void RevokeDock(Node dockingStation)
+    {
+        DockingPilot.Active = false;
+    }
+
+    private void _on_DockingPilot_DockingCompleted(Node2D dockingStation)
+    {
+        GD.Print("dock completed");
+        Pilot.Active = true;
+    }
+
+    private void _on_DockingPilot_DockingStarted(Node2D dockingStation) 
+    {
+        GD.Print("dock started");
+        Pilot.Active = false;
     }
 }

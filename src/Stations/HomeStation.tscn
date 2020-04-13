@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Assets/KeneySpaceShooterExtension/Station/spaceStation_021.png" type="Texture" id=1]
+[ext_resource path="res://src/Stations/HomeStation.cs" type="Script" id=2]
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 16.0
@@ -20,7 +21,13 @@ height = 29.8813
 radius = 18.37
 height = 22.852
 
+[sub_resource type="CircleShape2D" id=6]
+radius = 233.063
+
 [node name="HomeStation" type="KinematicBody2D"]
+collision_layer = 4
+collision_mask = 15
+script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
@@ -50,3 +57,16 @@ shape = SubResource( 4 )
 position = Vector2( 0, -125.528 )
 rotation = 1.5708
 shape = SubResource( 5 )
+
+[node name="DockStation" type="Area2D" parent="."]
+monitorable = false
+collision_layer = 16
+
+[node name="DockingShape" type="CollisionShape2D" parent="DockStation"]
+position = Vector2( 0, -272.182 )
+shape = SubResource( 6 )
+
+[node name="DockPosition" type="Position2D" parent="."]
+position = Vector2( 0, -144 )
+[connection signal="body_entered" from="DockStation" to="." method="_ShipEnteredDockingDistance"]
+[connection signal="body_exited" from="DockStation" to="." method="_ShipExitedDockingDistance"]

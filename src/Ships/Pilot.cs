@@ -11,6 +11,7 @@ public class Pilot : Node2D
     private bool _debugDraw;
     private Color _velocityColor;
     private float _maxSpeed;
+    private bool _active;
 
     [Signal]
     public delegate void OnCollision(KinematicCollision2D collision);
@@ -23,10 +24,28 @@ public class Pilot : Node2D
     public bool DebugDraw { get { return _debugDraw; } set { _debugDraw = value; Update(); } }
     [Export]
     public bool Break { get; set; }
+    [Export]
+    public bool Active
+    {
+        get { return _active; }
+        set
+        {
+            if (value != _active)
+            {
+                if (!_active)
+                {
+                    Velocity = Vector2.Zero;
+                }
+            }
+            _active = value;
+            Update();
+        }
+    }
 
     public Pilot()
     {
         VelocityColor = Colors.Green;
+        Active = true;
     }
 
     public override void _Ready()
@@ -73,6 +92,7 @@ public class Pilot : Node2D
 
     public override void _PhysicsProcess(float delta)
     {
+        if (!Active) { return; }
         if (Engine.EditorHint) { return; }
         var parent = GetParentOrNull<KinematicBody2D>();
         if (parent == null) { return; }
@@ -90,7 +110,8 @@ public class Pilot : Node2D
             EmitSignal(nameof(OnCollision), collision);
             Velocity = Vector2.Zero;
         }
-        if (Break && Velocity.LengthSquared() <= 100000) {
+        if (Break && Velocity.LengthSquared() <= 100000)
+        {
             Velocity = Velocity.LinearInterpolate(Vector2.Zero, 0.3f);
         }
     }
@@ -112,7 +133,8 @@ public class Pilot : Node2D
             totalThrust += t.ThrustVector * t.Thrust;
         }
         var totalDrag = Vector2.Zero;
-        foreach (var d in _drag) {
+        foreach (var d in _drag)
+        {
             d.Velocity = prevVelocity;
             totalDrag += d.TotalDrag;
         }
